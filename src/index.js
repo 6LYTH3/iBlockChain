@@ -7,16 +7,28 @@ class Block {
 		this.data = data
 		this.previousHash = previousHash
 		this.hash = this.calculateHash()
+		this.nonce = 0
 	}
 
 	calculateHash() {
-		return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data)).toString()
+		return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString()
+	}
+
+	mineBlock(difficulty) {
+		while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
+			this.nonce++
+			this.hash = this.calculateHash()
+		}
+
+		console.log("Block mimed: " + this.hash)
 	}
 }
 
 class Blockchain {
 	constructor() {
 		this.chain = [this.createGenesisBlock()]
+		// 2, 4, 5 => 00XXX, 0000XXX, 00000XXX
+		this.difficulty = 2
 	}
 
 	createGenesisBlock() {
@@ -29,7 +41,8 @@ class Blockchain {
 
 	addBlock(newBlock) {
 		newBlock.previousHash = this.getLatestBlock().hash
-		newBlock.hash = newBlock.calculateHash()
+		newBlock.mineBlock(this.difficulty)
+		//newBlock.hash = newBlock.calculateHash()
 		this.chain.push(newBlock)
 	}
 
@@ -52,14 +65,18 @@ class Blockchain {
 }
 
 let jibbyCoin = new Blockchain()
+
+console.log('Mining block 1...')
 jibbyCoin.addBlock(new Block(1, "30/03/2019", { amount: 10 }))
+console.log('Mining block 2...')
 jibbyCoin.addBlock(new Block(2, "30/03/2019", { amount: 5 }))
 
-console.log('Is blockchain valid? ' + jibbyCoin.isChainValid())
+
+// console.log('Is blockchain valid? ' + jibbyCoin.isChainValid())
 
 // Inject a Chain
-jibbyCoin.chain[1].data = { amount: 100 }
-jibbyCoin.chain[1].hash = jibbyCoin.chain[1].calculateHash()
-console.log('Is blockchain valid? ' + jibbyCoin.isChainValid())
+// jibbyCoin.chain[1].data = { amount: 100 }
+// jibbyCoin.chain[1].hash = jibbyCoin.chain[1].calculateHash()
+// console.log('Is blockchain valid? ' + jibbyCoin.isChainValid())
 
-console.log(JSON.stringify(jibbyCoin, null, 2))
+// console.log(JSON.stringify(jibbyCoin, null, 2))
