@@ -32,10 +32,34 @@ class Blockchain {
 		newBlock.hash = newBlock.calculateHash()
 		this.chain.push(newBlock)
 	}
+
+	isChainValid() {
+		for(let i = 1; i < this.chain.length; i++) {
+			const currentBlock = this.chain[i]
+			const previousBlock = this.chain[i - 1]
+
+			if(currentBlock.hash !== currentBlock.calculateHash()) {
+				return false
+			}
+
+			if(currentBlock.previousHash !== previousBlock.hash) {
+				return false
+			}
+		}
+		
+		return true
+	}
 }
 
 let jibbyCoin = new Blockchain()
 jibbyCoin.addBlock(new Block(1, "30/03/2019", { amount: 10 }))
 jibbyCoin.addBlock(new Block(2, "30/03/2019", { amount: 5 }))
+
+console.log('Is blockchain valid? ' + jibbyCoin.isChainValid())
+
+// Inject a Chain
+jibbyCoin.chain[1].data = { amount: 100 }
+jibbyCoin.chain[1].hash = jibbyCoin.chain[1].calculateHash()
+console.log('Is blockchain valid? ' + jibbyCoin.isChainValid())
 
 console.log(JSON.stringify(jibbyCoin, null, 2))
