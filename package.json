@@ -1,0 +1,18 @@
+{
+  "name": "blockchain",
+  "version": "1.0.0",
+  "description": "A Simple Blockchain",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha tests/*.test.js"
+  },
+  "author": "Naruedol Yoojun <St4r13uck@gmail.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/6LYTH3/iBlockChain"
+  },
+  "dependencies": {
+    "crypto-js": "^3.1.9-1"
+  }
+}
