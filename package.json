@@ -13,6 +13,7 @@
     "url": "https://github.com/6LYTH3/iBlockChain"
   },
   "dependencies": {
-    "crypto-js": "^3.1.9-1"
+    "crypto-js": "^3.1.9-1",
+    "elliptic": "^6.4.1"
   }
 }
