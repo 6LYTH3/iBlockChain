@@ -42,8 +42,8 @@ class Block {
 		this.timestamp = timestamp
 		this.transactions = transactions
 		this.previousHash = previousHash
-		this.hash = this.calculateHash()
 		this.nonce = 0
+		this.hash = this.calculateHash()
 	}
 
 	calculateHash() {
@@ -51,7 +51,7 @@ class Block {
 	}
 
 	mineBlock(difficulty) {
-		while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
+		while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
 			this.nonce++
 			this.hash = this.calculateHash()
 		}
@@ -80,8 +80,7 @@ class Blockchain {
 	}
 
 	createGenesisBlock() {
-		// return new Block("01/01/2019", "Genesis block", "0")
-		return new Block(Date.parse('2019-01-01'), [], "0")
+		return new Block(Date.parse('2019-01-01'), [], '0')
 	}
 
 	getLatestBlock() {
@@ -98,15 +97,13 @@ class Blockchain {
 		const rewardTx = new Transaction(null, miningRewardAddress, this.miningReward)
 		this.pendingTransactions.push(rewardTx)
 
-		let block = new Block(Date.now(), this.pendingTransactions)
+		let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash)
 		block.mineBlock(this.difficulty)
 
 		console.log('Block successfully mined!')
 		this.chain.push(block)
 
-		this.pendingTransactions = [
-			new Transaction(null, miningRewardAddress, this.miningReward)
-		]
+		this.pendingTransactions = []
 	}
 
 	addTransaction(transaction) {
@@ -139,7 +136,7 @@ class Blockchain {
 		return balance
 	}
 
-	getAllTransactionForWallet(address) {
+	getAllTransactionsForWallet(address) {
 		const txs = []
 		
 		for(const block of this.chain) {
@@ -153,6 +150,12 @@ class Blockchain {
 	}
 
 	isChainValid() {
+		const realGenesis = JSON.stringify(this.createGenesisBlock())
+
+		if(realGenesis !== JSON.stringify(this.chain[0])) {
+			return false
+		}
+
 		for(let i = 1; i < this.chain.length; i++) {
 			const currentBlock = this.chain[i]
 			const previousBlock = this.chain[i - 1]
